@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UserRegisterRequest;
 use App\Models\User;
+use App\Traits\APIResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    use APIResponseTrait;
+
     public function register(UserRegisterRequest $request)
     {
         DB::beginTransaction();
@@ -22,6 +25,7 @@ class AuthController extends Controller
             $token = $createUser->createToken('myApp')->plainTextToken;
             $responseArr['token'] = $token; 
             $responseArr['id'] = $createUser->id; 
+            $responseArr['status'] = true; 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -36,10 +40,9 @@ class AuthController extends Controller
             $user = $request->user();
             $responseArr['token'] = $user->createToken('myApp')->plainTextToken;
             $responseArr['id'] = $user->id; 
+            return $this->successResponse($responseArr, 'Login Successfully.');
         }else{
-            $responseArr['message'] = 'Invalid email & password';
-        }
-        return response()->json($responseArr);
-            
+            return $this->errorResponse('Invalid email & password', 404);
+        }   
     }
 }

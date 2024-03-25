@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 //admin components
 import AdminHomeIndex from '../components/admin/home/index.vue'
 
+// login component
+import Login from '../components/auth/login.vue'
+
 // home 
 import HomeIndex from '../components/pages/home/index.vue'
 
@@ -21,6 +24,11 @@ const routes = [
         component : HomeIndex
     },
 
+    //login 
+    {
+        path : '/login',
+        component : Login
+    },
     // Not found
     {
         path : '/:pathMatch(.*)*',
