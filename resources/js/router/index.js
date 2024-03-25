@@ -15,24 +15,40 @@ const routes = [
     // admin
     {
         path : '/admin/home',
-        component : AdminHomeIndex
+        name : 'adminHome',
+        component : AdminHomeIndex,
+        meta : {
+            authRequired : true,
+        }
     },
 
     //index
     {
         path : '/',
-        component : HomeIndex
+        name : 'Home',
+        component : HomeIndex,
+        meta : {
+            authRequired : false,
+        }
     },
 
     //login 
     {
         path : '/login',
-        component : Login
+        name : 'Login',
+        component : Login,
+        meta : {
+            authRequired : false,
+        }
     },
     // Not found
     {
         path : '/:pathMatch(.*)*',
-        component : NotFound
+        name : 'notFound',
+        component : NotFound,
+        meta : {
+            authRequired : false,
+        }
     }
 ]
 const router = createRouter({
@@ -40,4 +56,9 @@ const router = createRouter({
     routes,
 })
 
+router.beforeEach((to, from) => {
+    if(to.meta.authRequired && !localStorage.getItem('token')){
+        return {name : 'Login'}
+    }
+})
 export default router
